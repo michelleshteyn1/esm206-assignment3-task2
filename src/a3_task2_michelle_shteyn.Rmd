@@ -58,6 +58,12 @@ Make sure to `View()` the resulting data frame (remember: run `View()` in the Co
 ```{r}
 # Your code here: 
 
+sw_split_name<-starwars %>% #starting with 'starwars'
+  separate(col = "name", # separate the 'name' column
+           into = c("name_1","name_2"), #into two columns, 'name_1' and 'name_2'
+           sep = "-") # separate at the first dash
+
+#The name in Row 49, which contains two dashes, drops the 'Mundi' part of the name, because it is after a second dash.
 
 ```
 
@@ -92,7 +98,12 @@ Make sure to `View()` the resulting data frame (remember: run `View()` in the Co
 ```{r}
 # Your code here:
 
-
+sw_skin_sep <- starwars %>% #Start with starwars
+  separate(col = skin_color, #Separate the 'skin_color' column
+           into = c("skin_1","skin_2"), #Into two columns
+           sep = ",", #Create the separation at the first comma
+           extra = "merge", #If additional commas, merge all into the second column
+           remove = FALSE) #And *do not* remove the original column
 ```
 
 ### 2. `tidyr::unite()`
@@ -128,6 +139,11 @@ In the code chunk below, starting from the `mpg` data create a new data frame ca
 ```{r}
 # Your code here: 
 
+mpg_model_class <- mpg %>% #Start with mpg
+  unite(col = model_class, #Create new column called 'model_class'
+        c(model,class), #Which combines the model and class columns
+        sep = "-", #Puts a dash between the pieces
+        remove = FALSE) #And do not remove the original column
 
 ```
 
@@ -158,6 +174,11 @@ In the code chunk below, use `ymd()` to convert a date that you choose in `YYYY-
 ```{r}
 # Your code here: 
 
+ymd(20200417) #My birthday!
+
+ymd("2020-04-17")
+
+ymd("2020/04/17")
 
 ```
 
@@ -183,6 +204,12 @@ In the code chunk below, create a vector (using `c()`, as above) stored as `some
 ```{r}
 # Your code here: 
 
+some_dates <- c(11061972, 02142007,01301843) #Creates a vector of dates
+some_dates_converted <- mdy(some_dates)
+some_dates_converted
+class(some_dates_converted)
+
+#Cool!!
 
 ```
 
@@ -227,6 +254,11 @@ Starting from the `lakers` dataset, create a new dataset called `gasol_hookshots
 ```{r}
 # Your code here: 
 
+gasol_hookshots <- lakers %>% 
+  filter(player == "Pau Gasol" & type == "hook") %>% 
+  mutate(date=ymd(date)) %>% 
+  mutate(month=month(date)) %>% 
+  count(month)
 
 ```
 
@@ -276,6 +308,19 @@ Note: If you add another condition within `case_when()` that is `TRUE ~ "some th
 
 ```{r}
 # Your code here: 
+
+storms_danger <- storms %>% #start from 'storms
+  mutate(danger = case_when( #create a new column called 'danger'
+    status=="hurricane"~"high", #"high" if 'status' is "hurricane
+    status!="hurricane"~"moderate" #"moderate" if 'status is anything else
+  ))
+
+#I was confused by the 'TRUE' argument but the below worked the same as the top
+storms_danger1 <- storms %>% 
+  mutate(danger = case_when( 
+    status=="hurricane"~"high", 
+    TRUE~"moderate" #any entry that hasn't been specified by previous conditions will get that 'catch all' statement
+  ))
 
 
 ```
